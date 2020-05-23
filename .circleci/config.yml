@@ -15,10 +15,10 @@ jobs:
           resource-group: Ubuntu
       - run:
           command: kubectl apply -f app1.yaml --namespace ingress-basic
-          name: Apply new deployment app 1
+          name: Aplicar nuevo despliegue App 1
       - run:
           command: kubectl apply -f app2.yaml --namespace ingress-basic
-          name: Apply new deployment app 2
+          name: Aplicar nuevo despliegue App 2
   approval-job:
   prod-deploy:
     executor: azure-aks/azure-docker
@@ -33,10 +33,10 @@ jobs:
           resource-group: Produc
       - run:
           command: kubectl apply -f app1.yaml --namespace ingress-basic
-          name: Apply new deployment app 2
+          name: Aplicar nuevo despliegue App 2
       - run:
           command: kubectl apply -f app2.yaml --namespace ingress-basic
-          name: Apply new deployment app 1
+          name: Aplicar nuevo despliegue App 1
 workflows:
   build-and-test:
     jobs:
