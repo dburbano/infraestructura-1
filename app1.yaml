@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app1
+  name: web1
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: app1
+      app: web1
   template:
     metadata:
       labels:
-        app: app1
+        app: web1
     spec:
       containers:
-      - name: app1
+      - name: web1
         image: nginx
         volumeMounts:
           - name: page-vol
@@ -23,15 +23,15 @@ spec:
       volumes:
         - name: page-vol
           configMap:
-            name: app1-page
+            name: web1-page
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: app1
+  name: web1
 spec:
   type: ClusterIP
   ports:
   - port: 80
   selector:
-    app: app1
+    app: web1
