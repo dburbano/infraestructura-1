@@ -10,9 +10,9 @@ jobs:
           command: az login -u ${USER} -p ${PASS}
           name: Sign In to Azure CLI
       - azure-aks/update-kubeconfig-with-credentials:
-          cluster-name: C1
+          cluster-name: cluster
           install-kubectl: true
-          resource-group: G1
+          resource-group: Ubuntu
       - run:
           command: kubectl apply -f app1.yaml --namespace ingress-basic
           name: Apply new deployment app 1
