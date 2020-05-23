@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app1
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: app1
+  template:
+    metadata:
+      labels:
+        app: app1
+    spec:
+      containers:
+      - name: app1
+        image: nginx
+        volumeMounts:
+          - name: page-vol
+            mountPath: /usr/share/nginx/html
+        ports:
+        - containerPort: 80
+      volumes:
+        - name: page-vol
+          configMap:
+            name: app1-page
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app1
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: app1
