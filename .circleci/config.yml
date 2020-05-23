@@ -1,13 +1,59 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
-# Use a package of configuration called an orb.
 orbs:
-  # Declare a dependency on the welcome-orb
-  welcome: circleci/welcome-orb@0.4.1
-# Orchestrate or schedule a set of jobs
+  azure-aks: circleci/azure-aks@0.2.1
+jobs:
+  dev-deploy:
+    executor: azure-aks/azure-docker
+    steps:
+      - checkout
+      - run:
+          command: az login -u ${USER} -p ${PASS}
+          name: Sign In to Azure CLI
+      - azure-aks/update-kubeconfig-with-credentials:
+          cluster-name: C1
+          install-kubectl: true
+          resource-group: G1
+      - run:
+          command: kubectl apply -f app1.yaml --namespace ingress-basic
+          name: Apply new deployment app 1
+      - run:
+          command: kubectl apply -f app2.yaml --namespace ingress-basic
+          name: Apply new deployment app 2
+  approval-job:
+  prod-deploy:
+    executor: azure-aks/azure-docker
+    steps:
+      - checkout
+      - run:
+          command: az login -u ${USER} -p ${PASS}
+          name: Sign In to Azure CLI
+      - azure-aks/update-kubeconfig-with-credentials:
+          cluster-name: production
+          install-kubectl: true
+          resource-group: Produc
+      - run:
+          command: kubectl apply -f app1.yaml --namespace ingress-basic
+          name: Apply new deployment app 2
+      - run:
+          command: kubectl apply -f app2.yaml --namespace ingress-basic
+          name: Apply new deployment app 1
 workflows:
-  # Name the workflow "welcome"
-  welcome:
-    # Run the welcome/run job in its own container
+  build-and-test:
     jobs:
-      - welcome/run
+      - dev-deploy:
+          filters:
+              branches:
+                  only: master
+      - approval-job:
+          type: approval
+          requires:
+              - dev-deploy
+          filters:
+            branches:
+                only: master
+      - prod-deploy:
+          filters:
+              branches:
+                  only: master
+          requires:
+              - approval-job
