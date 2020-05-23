@@ -40,20 +40,11 @@ jobs:
 workflows:
   build-and-test:
     jobs:
-      - dev-deploy:
-          filters:
-              branches:
-                  only: circleci-project-setup
+      - dev-deploy
       - approval-job:
           type: approval
           requires:
               - dev-deploy
-          filters:
-            branches:
-                only: circleci-project-setup
       - prod-deploy:
-          filters:
-              branches:
-                  only: circleci-project-setup
           requires:
               - approval-job
