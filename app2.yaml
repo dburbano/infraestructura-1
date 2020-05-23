@@ -23,7 +23,7 @@ spec:
       volumes:
         - name: page-vol
           configMap:
-            name: web2-page
+            name: app2-page
 ---
 apiVersion: v1
 kind: Service
